@@ -10,6 +10,9 @@ class Details {
     //constants
     private static final String INVALID_INPUT = "Invalid Input!";
     private static final String EMPTY_FIELD = "Value not entered!";
+    private static final String MISSING_NAME_FIELD = "name should be the first field in the specified format '-name name_of_product'!";
+    private static final String IMPROPER_TYPE_FIELD = "'type' field is absent or incorrect!";
+    private static final String EMPTY_FIELD_NAME = "name field is mandatory!";
 
     Details() {
         this.name = "";
@@ -44,79 +47,80 @@ class Details {
         return this.tax;
     }
 
-    void getItemDetails(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            //check if all the fields have correct values
-            try {
-                if ("-name".compareTo(args[i]) == 0 && "-type".compareTo(args[i + 1]) != 0 && "-price".compareTo(args[i + 1]) != 0 && "-quantity".compareTo(args[i + 1]) != 0) {
-                    this.name = args[i + 1];
-                    i = i + 1;
+    void getItemDetails(String[] args, int field_count) {
+
+        try {
+            if (field_count == 1) {
+
+                if ("-name".compareTo(args[0]) != 0) {
+                    System.out.println(MISSING_NAME_FIELD);
+                    System.exit(0);
+                } else {
+                    this.name = args[1];
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(EMPTY_FIELD);
-                System.exit(0);
             }
-            try {
-                if ("-type".compareTo(args[i]) == 0 && "-price".compareTo(args[i + 1]) != 0 && "-quantity".compareTo(args[i + 1]) != 0 && "-name".compareTo(args[i + 1]) != 0) {
-                    this.type = args[i + 1];
-                    i = i + 1;
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(EMPTY_FIELD);
-                System.exit(0);
-            }
-            try {
-                if ("-price".compareTo(args[i]) == 0 && "-type".compareTo(args[i + 1]) != 0 && "quantity".compareTo(args[i + 1]) != 0 && "-name".compareTo(args[i + 1]) != 0) {
-                    try {
-                        this.price = Double.parseDouble(args[i + 1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(EMPTY_FIELD_NAME);
+            System.exit(0);
+        }
+        if (field_count == 2) {
+            for (int i = 0; i < args.length; i++) {
+                try {
+                    if ("-type".compareTo(args[i]) == 0 && "-price".compareTo(args[i + 1]) != 0 && "-quantity".compareTo(args[i + 1]) != 0) {
+                        this.type = args[i + 1];
                         i = i + 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println(INVALID_INPUT);
-                        System.exit(0);
                     }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println(EMPTY_FIELD);
+                    System.exit(0);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(INVALID_INPUT);
-                System.exit(0);
-            }
-            try {
-                if ("-quantity".compareTo(args[i]) == 0 && "-type".compareTo(args[i + 1]) != 0 && "-price".compareTo(args[i + 1]) != 0 && "-name".compareTo(args[i + 1]) != 0) {
-                    try {
-                        this.quantity = Integer.parseInt(args[i + 1]);
-                        i = i + 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println(INVALID_INPUT);
-                        System.exit(0);
+                try {
+                    if ("-price".compareTo(args[i]) == 0 && "-type".compareTo(args[i + 1]) != 0 && "quantity".compareTo(args[i + 1]) != 0) {
+                        try {
+                            this.price = Double.parseDouble(args[i + 1]);
+                            i = i + 1;
+                        } catch (NumberFormatException e) {
+                            System.out.println(INVALID_INPUT);
+                            System.exit(0);
+                        }
                     }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println(INVALID_INPUT);
+                    System.exit(0);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(EMPTY_FIELD);
-                System.exit(0);
+                try {
+                    if ("-quantity".compareTo(args[i]) == 0 && "-type".compareTo(args[i + 1]) != 0 && "-price".compareTo(args[i + 1]) != 0) {
+                        try {
+                            this.quantity = Integer.parseInt(args[i + 1]);
+                            i = i + 1;
+                        } catch (NumberFormatException e) {
+                            System.out.println(INVALID_INPUT);
+                            System.exit(0);
+                        }
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println(EMPTY_FIELD);
+                    System.exit(0);
+                }
             }
         }
-        calculateTax();
     }
 
     public void calculateTax() {
         if (this.price != 0) {
+
+            TaxCalculation tax_calc = new TaxCalculation();
+
             if ("raw".equals(this.type)) {
-                this.tax = 0.125 * this.price;
+                this.tax = tax_calc.taxForRaw(this.price);
 
             } else if ("manufactured".equals(this.type)) {
-                this.tax = 0.125 * this.price + (0.02 * (this.price + 0.125 * this.price));
+                this.tax = tax_calc.taxForManufactured(this.price);
+
             } else if ("imported".equals(this.type)) {
-                this.tax = this.price * 0.1;
-                double surcharge = 0.0;
-                double total = this.price + this.tax;
-                //calculating surcharge amount
-                if (total <= 100) {
-                    surcharge = 5;
-                } else if (total <= 200) {
-                    surcharge = 10;
-                } else {
-                    surcharge = 0.05 * total;
-                }
-                this.tax = this.tax + surcharge;
+                this.tax = tax_calc.taxForImported(this.price);
+            } else {
+                System.out.println(IMPROPER_TYPE_FIELD);
             }
         }
     }

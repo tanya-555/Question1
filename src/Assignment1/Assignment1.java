@@ -15,15 +15,32 @@ public class Assignment1 {
         Scanner sc = new Scanner(System.in);
         char choice = 'n';
         do {
-            System.out.println("Enter new item details:");
-            String input = sc.next();
-            input += sc.nextLine();
-            String inpArray[] = input.split(" ");
+            String inpArray[];
+            String input;
             Details detail = new Details();
-            detail.getItemDetails(inpArray);
+            int field_count=0;
+            System.out.println("Enter new item details:");
+
+            System.out.println("Enter name in the format -name followed by name");
+            input = sc.next();
+            input += sc.nextLine();
+            inpArray = input.split(" ");
+            field_count = field_count+1;
+            detail.getItemDetails(inpArray, field_count);
+
+            System.out.println("Enter price, quantity and type in any order in the format -price/quantity/order followed by price/quantity/order");
+            input = sc.next();
+            input += sc.nextLine();
+            inpArray = input.split(" ");
+            field_count = field_count+1;
+            detail.getItemDetails(inpArray, field_count);
+
             items.add(detail);
+            detail.calculateTax();
+
             System.out.println("Do you want to enter details of other items (y/n):");
             choice = sc.next().charAt(0);
+
         } while (choice == 'y');
         printDetails(items);
     }
