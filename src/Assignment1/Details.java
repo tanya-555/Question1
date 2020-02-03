@@ -109,16 +109,15 @@ class Details {
     public void calculateTax() {
         if (this.price != 0) {
 
-            TaxCalculation tax_calc = new TaxCalculation();
 
             if ("raw".equals(this.type)) {
-                this.tax = tax_calc.taxForRaw(this.price);
+                this.tax = TaxCalculation.taxForRaw(this.price);
 
             } else if ("manufactured".equals(this.type)) {
-                this.tax = tax_calc.taxForManufactured(this.price);
+                this.tax = TaxCalculation.taxForManufactured(this.price);
 
             } else if ("imported".equals(this.type)) {
-                this.tax = tax_calc.taxForImported(this.price);
+                this.tax = TaxCalculation.taxForImported(this.price);
             } else {
                 System.out.println(IMPROPER_TYPE_FIELD);
             }
