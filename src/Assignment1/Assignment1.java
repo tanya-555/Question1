@@ -10,36 +10,27 @@ public class Assignment1 {
     private static final String MISSING_NAME = "name not entered!";
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
+
         ArrayList<Details> items = new ArrayList<Details>();
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         char choice = 'n';
+        System.out.println("Item details consists of the following parameters :\n -name, -type, -price, -quantity \n Valid values for type are : \n 1. Raw \n 2. Manufactured \n 3. Imported \n name and type are mandatory fields \n name should be the first parameter");
         do {
-            String inpArray[];
+            String inputArray[];
             String input;
             Details detail = new Details();
-            int field_count=0;
-            System.out.println("Enter new item details:");
+            System.out.println("Enter details for new item:");
 
-            System.out.println("Enter name in the format -name followed by name");
-            input = sc.next();
-            input += sc.nextLine();
-            inpArray = input.split(" ");
-            field_count = field_count+1;
-            detail.getItemDetails(inpArray, field_count);
-
-            System.out.println("Enter price, quantity and type in any order in the format -price/quantity/order followed by price/quantity/order");
-            input = sc.next();
-            input += sc.nextLine();
-            inpArray = input.split(" ");
-            field_count = field_count+1;
-            detail.getItemDetails(inpArray, field_count);
-
-            items.add(detail);
-            detail.calculateTax();
-
+            input = scanner.next();
+            input += scanner.nextLine();
+            inputArray = input.split(" ");
+            int result = detail.getItemDetails(inputArray);
+            if (result == 1) {
+                items.add(detail);
+                detail.calculateTaxAndTotal();
+            }
             System.out.println("Do you want to enter details of other items (y/n):");
-            choice = sc.next().charAt(0);
+            choice = scanner.next().charAt(0);
 
         } while (choice == 'y');
         printDetails(items);
@@ -57,9 +48,8 @@ public class Assignment1 {
             } else {
                 System.out.println("Item name : " + detail.getName());
             }
-            System.out.println("Item price : " + detail.getPrice());
-            System.out.println("Tax per item : " + detail.getTax());
-            System.out.println("Total price is : " + (detail.getPrice() + detail.getTax()));
+            String result = String.format("Item price: %f \nTax per item: %f \nTotal price: %f", detail.getPrice(), detail.getTax(), (detail.getTotal()));
+            System.out.println(result);
             System.out.println("--------------------------------------------------------------");
         }
     }

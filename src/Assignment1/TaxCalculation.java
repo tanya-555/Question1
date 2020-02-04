@@ -1,7 +1,7 @@
 package Assignment1;
 
 public class TaxCalculation {
-    
+
     //list of constants
     private static final double RAW_TAX_PERCENT = 0.125;
     private static final double MANUFACTURED_TAX_PERCENT = 0.02;
@@ -12,9 +12,7 @@ public class TaxCalculation {
     }
 
     static double taxForManufactured(double price) {
-        return RAW_TAX_PERCENT * price + (MANUFACTURED_TAX_PERCENT * (price + RAW_TAX_PERCENT
-                                                                      P
-                                                                      private* price));
+        return RAW_TAX_PERCENT * price + (MANUFACTURED_TAX_PERCENT * (price + RAW_TAX_PERCENT * price));
     }
 
     static double taxForImported(double price) {
@@ -24,6 +22,7 @@ public class TaxCalculation {
         double total = price + tax;
 
         //calculating surcharge amount
+
         if (total <= 100) {
             surcharge = 5;
         } else if (total <= 200) {
